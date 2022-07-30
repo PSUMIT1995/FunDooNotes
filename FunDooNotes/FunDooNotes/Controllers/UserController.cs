@@ -1,8 +1,11 @@
 ﻿using BussinessLayer.Interface;
 using CommonLayer.Modal;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Interface;
+using System.Linq;
+using System.Security.Claims;
 
 namespace FundooNotes.Controllers
 {
@@ -69,5 +72,34 @@ namespace FundooNotes.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("ForgetPassword")]
+
+        public IActionResult ForgetPassword(string Email)
+        {
+            try
+            {
+                var result = iuserBL.ForgetPassword(Email);
+
+                if (result != null)
+                {
+                    return Ok(new { success = true, message = "Token Sent TO Your Email Successfully"});
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Token Genration Failed"});
+                }
+
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        
     }
 }

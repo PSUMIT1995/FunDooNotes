@@ -1,6 +1,7 @@
 ﻿using CommonLayer.Modal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Azure.Management.ContainerInstance.Fluent;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
@@ -102,5 +103,33 @@ namespace RepositoryLayer.Service
             return tokenHandler.WriteToken(token);
 
         }
+
+        public string ForgetPassword(string Email)
+        {
+            try
+            {
+                var emailCheck = fundooContext.UserTable.FirstOrDefault(x => x.Email == Email);
+
+                if (emailCheck != null)
+                {
+                    var Token = GenerateSecurityToken(emailCheck.Email, emailCheck.UserId);
+                    MSMQmodel mSMQmodel = new MSMQmodel();
+                    mSMQmodel.sendData2Queue(Token);
+                    return Token.ToString();
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+       
     }
 }
