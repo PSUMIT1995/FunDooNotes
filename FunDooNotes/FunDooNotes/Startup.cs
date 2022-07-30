@@ -107,7 +107,6 @@ namespace FunDooNotes
                 app.UseDeveloperExceptionPage();
             }
 
-
             app.UseHttpsRedirection();
 
             app.UseRouting();

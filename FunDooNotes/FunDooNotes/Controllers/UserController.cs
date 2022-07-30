@@ -20,9 +20,9 @@ namespace FundooNotes.Controllers
             this.iuserBL = iuserBL;
         }
 
+
         [HttpPost]
         [Route("Register")]
-
         public IActionResult RegisterUser(UserRegistrationModel userRegistration)
         {
             try
@@ -41,14 +41,13 @@ namespace FundooNotes.Controllers
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
 
+
         [HttpPost]
         [Route("Login")]
-
         public IActionResult UserLogin(UserLogin userLogin)
         {
             try
@@ -67,7 +66,6 @@ namespace FundooNotes.Controllers
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -75,7 +73,6 @@ namespace FundooNotes.Controllers
 
         [HttpPost]
         [Route("ForgetPassword")]
-
         public IActionResult ForgetPassword(string Email)
         {
             try
@@ -94,12 +91,36 @@ namespace FundooNotes.Controllers
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
 
 
-        
+        [Authorize]
+        [HttpPost]
+        [Route("ResetLink")]
+        public IActionResult ResetLink(string password, string confirmPassword)
+        {
+            try
+            {
+                var Email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                var result = iuserBL.ResetLink(Email, password, confirmPassword);
+
+                if (result != null)
+                {
+                    return Ok(new { success = true, message = "Password Change Successfully" });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Password change Failed" });
+                }
+
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

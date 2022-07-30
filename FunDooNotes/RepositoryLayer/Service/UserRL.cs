@@ -116,7 +116,6 @@ namespace RepositoryLayer.Service
                     MSMQmodel mSMQmodel = new MSMQmodel();
                     mSMQmodel.sendData2Queue(Token);
                     return Token.ToString();
-
                 }
                 else
                 {
@@ -125,11 +124,33 @@ namespace RepositoryLayer.Service
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
 
-       
+
+        public bool ResetLink(string email, string password, string confirmPassword)
+        {
+            try
+            {
+                if (password.Equals(confirmPassword))
+                {
+                    var emailCheck = fundooContext.UserTable.FirstOrDefault(x => x.Email == email);
+                    emailCheck.Password = password;
+
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

@@ -56,6 +56,17 @@ namespace BussinessLayer.Service
             }
         }
 
-        
+
+        public bool ResetLink(string email, string password, string confirmPassword)
+        {
+            try
+            {
+                return iuserRL.ResetLink(email, password, confirmPassword);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
