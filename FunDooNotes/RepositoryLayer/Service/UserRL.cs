@@ -33,7 +33,7 @@ namespace RepositoryLayer.Service
                 userEntity.FirstName = userRegistrationModel.FirstName;
                 userEntity.LastName = userRegistrationModel.LastName;
                 userEntity.Email = userRegistrationModel.Email;
-                userEntity.Password = userRegistrationModel.Password;
+                userEntity.Password = ConvertToEncrypt(userRegistrationModel.Password);
 
                 fundooContext.UserTable.Add(userEntity);
                 int result = fundooContext.SaveChanges();
@@ -59,7 +59,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                var LoginResult = fundooContext.UserTable.Where(user => user.Email== userLoginModel.Email && user.Password == userLoginModel.Password).FirstOrDefault();
+                var LoginResult = fundooContext.UserTable.Where(user => user.Email== userLoginModel.Email && user.Password == ConvertToEncrypt(userLoginModel.Password)).FirstOrDefault();
 
                 if (LoginResult != null)
                 {
@@ -151,6 +151,26 @@ namespace RepositoryLayer.Service
 
                 throw;
             }
+        }
+
+        public static string key = "acbbhjbsghjb@@bkhnb";
+
+        public static string ConvertToEncrypt(string password)
+        {
+            if (string.IsNullOrEmpty(password)) return "";
+            password += key;
+            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            return Convert.ToBase64String(passwordBytes);
+
+        }
+
+        public static string ConvertToDecrypt(string base64EncodeData)
+        {
+            if (string.IsNullOrEmpty(base64EncodeData)) return "";
+            var base64EncodeBytes = Convert.FromBase64String(base64EncodeData);
+            var result = Encoding.UTF8.GetString(base64EncodeBytes);
+            result = result.Substring(0, result.Length - key.Length);
+            return result;
         }
     }
 }
